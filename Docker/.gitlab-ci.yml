@@ -1,0 +1,21 @@
+variables:
+  DOCKER_REPO_URI: xxxxx.dkr.ecr.us-east-1.amazonaws.com/homebase
+
+stages:
+  - docker build
+
+Build Docker:
+  stage: docker build
+  image: ruby:3.0.6-slim-buster
+  tags:
+    - Production
+
+  before_script:
+    - umask 002
+    - pip3 install awscli
+  
+  script:
+    - echo "Building Container"
+    - $(aws ecr get-login --region us-east-1)
+    - docker build . -t homebase
+    - docker push $DOCER_REPO_URI:latest
